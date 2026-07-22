@@ -3,3 +3,6 @@ spring:
     name: suwaroute
   profiles:
     active: local
+firebase:
+  database:
+    url: DATABASE_URL
