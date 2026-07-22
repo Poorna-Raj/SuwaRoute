@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: suwaroute
+  profiles:
+    active: local
