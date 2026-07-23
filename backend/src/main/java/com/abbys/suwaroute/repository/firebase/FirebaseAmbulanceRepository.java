@@ -1,14 +1,17 @@
 package com.abbys.suwaroute.repository.firebase;
 
+import com.abbys.suwaroute.common.exception.DatabaseException;
 import com.abbys.suwaroute.model.ambulance.Ambulance;
-import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
 @Repository
-public class FirebaseAmbulanceRepository implements AmbulanceRepository{
+public class FirebaseAmbulanceRepository implements AmbulanceRepository {
+
     private static final String COLLECTION = "ambulances";
 
     private final Firestore firestore;
@@ -17,64 +20,128 @@ public class FirebaseAmbulanceRepository implements AmbulanceRepository{
         this.firestore = firestore;
     }
 
-
     @Override
-    public Ambulance save(Ambulance ambulance) throws Exception {
-        ApiFuture<WriteResult> future = firestore
-                .collection(COLLECTION)
-                .document(ambulance.getAmbulanceId())
-                .set(ambulance);
-        future.get();
-        return ambulance;
-    }
+    public Ambulance save(Ambulance ambulance) {
 
-    @Override
-    public Ambulance findById(String id) throws Exception {
-        DocumentReference documentReference = firestore
-                .collection(COLLECTION)
-                .document(id);
-        DocumentSnapshot snapshot =
-                documentReference.get().get();
+        try {
 
-        if(!snapshot.exists()){
-            return null;
+            firestore.collection(COLLECTION)
+                    .document(ambulance.getAmbulanceId())
+                    .set(ambulance)
+                    .get();
+
+            return ambulance;
+
+        } catch (InterruptedException e) {
+
+            Thread.currentThread().interrupt();
+            throw new DatabaseException("Database operation interrupted.", e);
+
+        } catch (ExecutionException e) {
+
+            throw new DatabaseException("Failed to save ambulance.", e);
         }
-
-        return snapshot.toObject(Ambulance.class);
     }
 
     @Override
-    public List<Ambulance> findAll() throws Exception {
-        ApiFuture<QuerySnapshot> future =
-                firestore.collection(COLLECTION).get();
+    public Ambulance findById(String id) {
 
-        List<QueryDocumentSnapshot> documents =
-                future.get().getDocuments();
+        try {
 
-        List<Ambulance> ambulances = new ArrayList<>();
+            DocumentSnapshot snapshot = firestore
+                    .collection(COLLECTION)
+                    .document(id)
+                    .get()
+                    .get();
 
-        for(QueryDocumentSnapshot document:documents){
-            ambulances.add(document.toObject(Ambulance.class));
+            if (!snapshot.exists()) {
+                return null;
+            }
+
+            return snapshot.toObject(Ambulance.class);
+
+        } catch (InterruptedException e) {
+
+            Thread.currentThread().interrupt();
+            throw new DatabaseException("Database operation interrupted.", e);
+
+        } catch (ExecutionException e) {
+
+            throw new DatabaseException("Failed to retrieve ambulance.", e);
         }
-
-        return ambulances;
     }
 
     @Override
-    public Ambulance update(Ambulance ambulance) throws Exception {
-        firestore.collection(COLLECTION)
-                .document(ambulance.getAmbulanceId())
-                .set(ambulance)
-                .get();
+    public List<Ambulance> findAll() {
 
-        return ambulance;
+        try {
+
+            List<QueryDocumentSnapshot> documents = firestore
+                    .collection(COLLECTION)
+                    .get()
+                    .get()
+                    .getDocuments();
+
+            List<Ambulance> ambulances = new ArrayList<>();
+
+            for (QueryDocumentSnapshot document : documents) {
+                ambulances.add(document.toObject(Ambulance.class));
+            }
+
+            return ambulances;
+
+        } catch (InterruptedException e) {
+
+            Thread.currentThread().interrupt();
+            throw new DatabaseException("Database operation interrupted.", e);
+
+        } catch (ExecutionException e) {
+
+            throw new DatabaseException("Failed to retrieve ambulances.", e);
+        }
     }
 
     @Override
-    public void delete(String id) throws Exception {
-        firestore.collection(COLLECTION)
-                .document(id)
-                .delete()
-                .get();
+    public Ambulance update(Ambulance ambulance) {
+
+        try {
+
+            firestore.collection(COLLECTION)
+                    .document(ambulance.getAmbulanceId())
+                    .set(ambulance)
+                    .get();
+
+            return ambulance;
+
+        } catch (InterruptedException e) {
+
+            Thread.currentThread().interrupt();
+            throw new DatabaseException("Database operation interrupted.", e);
+
+        } catch (ExecutionException e) {
+
+            throw new DatabaseException("Failed to update ambulance.", e);
+        }
+    }
+
+    @Override
+    public void delete(String id) {
+
+        try {
+
+            firestore.collection(COLLECTION)
+                    .document(id)
+                    .delete()
+                    .get();
+
+        } catch (InterruptedException e) {
+
+            Thread.currentThread().interrupt();
+            throw new DatabaseException("Database operation interrupted.", e);
+
+        } catch (ExecutionException e) {
+
+            throw new DatabaseException("Failed to delete ambulance.", e);
+        }
     }
 }
