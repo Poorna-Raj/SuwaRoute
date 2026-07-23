@@ -22,9 +22,7 @@ public class FirebaseAmbulanceRepository implements AmbulanceRepository {
 
     @Override
     public Ambulance save(Ambulance ambulance) {
-
         try {
-
             firestore.collection(COLLECTION)
                     .document(ambulance.getAmbulanceId())
                     .set(ambulance)
@@ -33,19 +31,15 @@ public class FirebaseAmbulanceRepository implements AmbulanceRepository {
             return ambulance;
 
         } catch (InterruptedException e) {
-
             Thread.currentThread().interrupt();
             throw new DatabaseException("Database operation interrupted.", e);
-
         } catch (ExecutionException e) {
-
             throw new DatabaseException("Failed to save ambulance.", e);
         }
     }
 
     @Override
     public Ambulance findById(String id) {
-
         try {
 
             DocumentSnapshot snapshot = firestore
@@ -61,21 +55,16 @@ public class FirebaseAmbulanceRepository implements AmbulanceRepository {
             return snapshot.toObject(Ambulance.class);
 
         } catch (InterruptedException e) {
-
             Thread.currentThread().interrupt();
             throw new DatabaseException("Database operation interrupted.", e);
-
         } catch (ExecutionException e) {
-
             throw new DatabaseException("Failed to retrieve ambulance.", e);
         }
     }
 
     @Override
     public List<Ambulance> findAll() {
-
         try {
-
             List<QueryDocumentSnapshot> documents = firestore
                     .collection(COLLECTION)
                     .get()
@@ -91,56 +80,42 @@ public class FirebaseAmbulanceRepository implements AmbulanceRepository {
             return ambulances;
 
         } catch (InterruptedException e) {
-
             Thread.currentThread().interrupt();
             throw new DatabaseException("Database operation interrupted.", e);
-
         } catch (ExecutionException e) {
-
             throw new DatabaseException("Failed to retrieve ambulances.", e);
         }
     }
 
     @Override
     public Ambulance update(Ambulance ambulance) {
-
         try {
-
             firestore.collection(COLLECTION)
                     .document(ambulance.getAmbulanceId())
                     .set(ambulance)
                     .get();
-
             return ambulance;
 
         } catch (InterruptedException e) {
-
             Thread.currentThread().interrupt();
             throw new DatabaseException("Database operation interrupted.", e);
-
         } catch (ExecutionException e) {
-
             throw new DatabaseException("Failed to update ambulance.", e);
         }
     }
 
     @Override
     public void delete(String id) {
-
         try {
-
             firestore.collection(COLLECTION)
                     .document(id)
                     .delete()
                     .get();
 
         } catch (InterruptedException e) {
-
             Thread.currentThread().interrupt();
             throw new DatabaseException("Database operation interrupted.", e);
-
         } catch (ExecutionException e) {
-
             throw new DatabaseException("Failed to delete ambulance.", e);
         }
     }
