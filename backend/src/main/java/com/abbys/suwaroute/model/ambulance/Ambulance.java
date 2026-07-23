@@ -7,14 +7,14 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Ambulance {
     private String ambulanceId;
     private AmbulanceStatus status;
     private String currentNode;
-    private double longitude;
     private double latitude;
+    private double longitude;
     private double speed;
     private String currentEmergencyId;
 }
