@@ -34,7 +34,7 @@ public class FirebaseAmbulanceRepository implements AmbulanceRepository {
             Thread.currentThread().interrupt();
             throw new DatabaseException("Database operation interrupted.", e);
         } catch (ExecutionException e) {
-            throw new DatabaseException("Failed to save ambulance.", e);
+            throw new DatabaseException("Failed to save hospital.", e);
         }
     }
 
