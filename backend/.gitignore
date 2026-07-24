@@ -34,3 +34,4 @@ build/
 
 serviceAccountKey.json
 application-local.yaml
+map.pbf
