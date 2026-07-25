@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GraphNode {
-    private String nodeId;
+    private long nodeId;
     private double latitude;
     private double longitude;
 }
