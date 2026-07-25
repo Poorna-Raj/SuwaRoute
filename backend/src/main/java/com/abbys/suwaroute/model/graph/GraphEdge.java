@@ -10,10 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GraphEdge {
-    private String edgeId;
-    private String sourceNodeId;
-    private String destinationNodeId;
+    private long sourceNodeId;
+    private long destinationNodeId;
     private double distanceMeters;
     private boolean oneWay;
-    private String roadName;
 }
