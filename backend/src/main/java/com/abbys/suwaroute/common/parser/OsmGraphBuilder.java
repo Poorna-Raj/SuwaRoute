@@ -2,66 +2,81 @@ package com.abbys.suwaroute.common.parser;
 
 import com.abbys.suwaroute.model.graph.Graph;
 import com.abbys.suwaroute.model.graph.GraphEdge;
-import com.abbys.suwaroute.model.graph.GraphNode;
-import com.abbys.suwaroute.model.osm.OsmData;
 import com.abbys.suwaroute.model.osm.OsmNode;
 import com.abbys.suwaroute.model.osm.OsmWay;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class OsmGraphBuilder {
-    public Graph build(OsmData osmData){
+
+    public Graph build(RoadNetworkData data) {
+
         Graph graph = new Graph();
 
-        osmData.getNodes().values().forEach(node ->{
-            GraphNode graphNode = GraphNode.builder()
-                    .nodeId(node.getId())
-                    .latitude(node.getLatitude())
-                    .longitude(node.getLongitude())
-                    .build();
-            graph.getNodes().put(graphNode.getNodeId(),graphNode);
-        });
+        graph.getNodes().putAll(data.getRoadNodes());
 
-        for(OsmWay way: osmData.getWays()){
-            buildEdges(graph,way,osmData);
+        for (OsmWay way : data.getRoadWays()) {
+
+            List<Long> nodeIds = way.getNodeIds();
+
+            for (int i = 0; i < nodeIds.size() - 1; i++) {
+
+                long fromId = nodeIds.get(i);
+                long toId = nodeIds.get(i + 1);
+
+                OsmNode fromNode = data.getRoadNodes().get(fromId);
+                OsmNode toNode = data.getRoadNodes().get(toId);
+
+                if (fromNode == null || toNode == null)
+                    continue;
+
+                double distance = calculateDistance(fromNode, toNode);
+
+                addEdge(graph, fromId, toId, distance, way.isOneWay());
+
+                if (!way.isOneWay()) {
+
+                    addEdge(graph, toId, fromId, distance, false);
+
+                }
+
+            }
+
         }
 
         return graph;
+
     }
 
-    private void buildEdges(Graph graph,OsmWay way,OsmData data){
-        var nodeIds = way.getNodeIds();
+    private void addEdge(Graph graph,
+                         long from,
+                         long to,
+                         double distance,
+                         boolean oneWay) {
 
-        for(int i=0; i<nodeIds.size()-1; i++){
-            long fromId = nodeIds.get(i);
-            long toId = nodeIds.get(i+1);
+        GraphEdge edge = GraphEdge.builder()
+                .sourceNodeId(from)
+                .destinationNodeId(to)
+                .distanceMeters(distance)
+                .oneWay(oneWay)
+                .build();
 
-            OsmNode fromNode = data.getNodes().get(fromId);
-            OsmNode toNode = data.getNodes().get(toId);
+        graph.getAdjacencyList()
+                .computeIfAbsent(from, k -> new ArrayList<>())
+                .add(edge);
 
-            if(fromNode == null || toNode == null){
-                continue;
-            }
-
-            double distance = calculateDistance(fromNode,toNode);
-            addEdge(graph,fromId,toId,distance);
-
-            if(!way.isOneWay()){
-                addEdge(graph,toId,fromId,distance);
-            }
-        }
     }
 
-    private double calculateDistance(OsmNode fromNode, OsmNode toNode) {
+    private double calculateDistance(OsmNode from, OsmNode to) {
+
         final double R = 6371000;
 
-        double lat1 = Math.toRadians(fromNode.getLatitude());
-        double lat2 = Math.toRadians(toNode.getLatitude());
+        double lat1 = Math.toRadians(from.getLatitude());
+        double lat2 = Math.toRadians(to.getLatitude());
 
         double dLat = lat2 - lat1;
-        double dLon = Math.toRadians(
-                toNode.getLongitude()- fromNode.getLongitude()
-        );
+        double dLon = Math.toRadians(to.getLongitude() - from.getLongitude());
 
         double a =
                 Math.sin(dLat / 2) * Math.sin(dLat / 2)
@@ -75,17 +90,4 @@ public class OsmGraphBuilder {
         return R * c;
     }
 
-    private void addEdge(Graph graph, long from, long to, double distance){
-        GraphEdge edge = GraphEdge.builder()
-                .sourceNodeId(from)
-                .destinationNodeId(to)
-                .distanceMeters(distance)
-                .oneWay(false)
-                .build();
-        graph.getAdjacencyList()
-                .computeIfAbsent(from, k -> new ArrayList<>())
-                .add(edge);
-    }
-    
-    
 }

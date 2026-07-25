@@ -7,23 +7,25 @@ import java.io.File;
 
 public class OsmPbfReader {
 
-    public OsmData read(String filePath) {
+    public RoadNetworkData read(String filePath) {
 
         File file = new File(filePath);
 
-        if (!file.exists()) {
-            throw new RuntimeException("PBF file not found: " + file.getAbsolutePath());
-        }
+        RoadWayCollector wayCollector = new RoadWayCollector();
 
-        RoadNetworkSink sink = new RoadNetworkSink();
+        OsmosisReader pass1 = new OsmosisReader(file);
+        pass1.setSink(wayCollector);
+        pass1.run();
 
-        OsmosisReader reader = new OsmosisReader(file);
+        RoadNetworkData data = wayCollector.getData();
 
-        reader.setSink(sink);
+        RoadNodeCollector nodeCollector = new RoadNodeCollector(data);
 
-        reader.run();
+        OsmosisReader pass2 = new OsmosisReader(file);
+        pass2.setSink(nodeCollector);
+        pass2.run();
 
-        return sink.getOsmData();
+        return data;
     }
 
 }
