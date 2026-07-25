@@ -1,15 +1,14 @@
 package com.abbys.suwaroute.model.graph;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.io.Serializable;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class GraphEdge {
+@AllArgsConstructor
+public class GraphEdge implements Serializable {
     private long sourceNodeId;
     private long destinationNodeId;
     private double distanceMeters;

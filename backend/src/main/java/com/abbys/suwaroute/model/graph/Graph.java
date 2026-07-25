@@ -1,19 +1,19 @@
 package com.abbys.suwaroute.model.graph;
 
+import com.abbys.suwaroute.model.osm.OsmNode;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Getter
 @Setter
-public class Graph {
-    private Map<Long,GraphNode> nodes;
-    private Map<Long, List<GraphEdge>> adjacencyList;
+public class Graph implements Serializable {
 
-    public Graph(){
-        this.nodes = new HashMap<>();
-        this.adjacencyList = new HashMap<>();
-    }
+    private final Map<Long, OsmNode> nodes = new HashMap<>();
+
+    private final Map<Long, List<GraphEdge>> adjacencyList = new HashMap<>();
+
 }

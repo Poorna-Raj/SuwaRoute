@@ -3,13 +3,16 @@ package com.abbys.suwaroute.model.osm;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Data
-@AllArgsConstructor
 @Builder
-public class OsmNode {
+@AllArgsConstructor
+public class OsmNode implements Serializable {
+
     private final long id;
     private final double latitude;
     private final double longitude;
+
 }
