@@ -9,5 +9,10 @@ public class TestDriver {
         Graph graph = gl.load("src/main/resources/graph/graph.ser");
 
         System.out.println(graph.getNodes().size());
+
+        graph.getNodes().keySet()
+                .stream()
+                .limit(10)
+                .forEach(System.out::println);
     }
 }
