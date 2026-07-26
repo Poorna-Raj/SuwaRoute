@@ -68,4 +68,8 @@ public class HospitalService {
 
         repository.delete(id);
     }
+
+    public List<Hospital> findHospitalsWithAvailableBeds() {
+        return repository.findHospitalsWithAvailableBeds();
+    }
 }
