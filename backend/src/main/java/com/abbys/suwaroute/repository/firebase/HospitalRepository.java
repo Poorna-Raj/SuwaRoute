@@ -15,4 +15,6 @@ public interface HospitalRepository {
     Hospital update(Hospital hospital);
 
     void delete(String id);
+
+    List<Hospital> findHospitalsWithAvailableBeds();
 }
