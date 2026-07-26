@@ -17,7 +17,7 @@ public class Emergency {
     private String callerNumber;
     private double longitude;
     private double latitude;
-    private String nearestNodeId;
+    private long nearestNodeId;
     private EmergencySeverity severity;
     private EmergencyStatus status;
     private String assignedAmbulanceId;
