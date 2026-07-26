@@ -64,4 +64,8 @@ public class AmbulanceService {
         ambulanceRepository.delete(id);
     }
 
+    public List<Ambulance> findAvailableAmbulances() {
+        return ambulanceRepository.findAvailable();
+    }
+
 }
