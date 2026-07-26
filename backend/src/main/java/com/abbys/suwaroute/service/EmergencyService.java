@@ -13,9 +13,14 @@ import java.util.List;
 public class EmergencyService {
 
     private final EmergencyRepository repository;
+    private final DispatchService dispatchService;
 
-    public EmergencyService(EmergencyRepository repository) {
+    public EmergencyService(
+            EmergencyRepository repository,
+            DispatchService dispatchService
+    ) {
         this.repository = repository;
+        this.dispatchService = dispatchService;
     }
 
     public Emergency createEmergency(Emergency emergency) {
@@ -30,7 +35,9 @@ public class EmergencyService {
             emergency.setStatus(EmergencyStatus.PENDING);
         }
 
-        return repository.save(emergency);
+        Emergency savedEmergency = repository.save(emergency);
+
+        return dispatchService.dispatchEmergency(savedEmergency);
     }
 
     public Emergency getEmergencyById(String id) {
