@@ -3,9 +3,6 @@ package com.abbys.suwaroute;
 import com.abbys.suwaroute.common.parser.GraphLoader;
 import com.abbys.suwaroute.common.test.RoutingTester;
 import com.abbys.suwaroute.model.graph.Graph;
-import com.abbys.suwaroute.model.graph.GraphEdge;
-import com.abbys.suwaroute.model.routing.RouteResult;
-import com.abbys.suwaroute.service.DijkstraService;
 
 import java.util.*;
 
@@ -20,6 +17,5 @@ public class TestDriver {
         RoutingTester tester = new RoutingTester(graph);
 
         tester.runRandomTest(100);
-
     }
 }
