@@ -5,10 +5,12 @@ import com.abbys.suwaroute.model.graph.GraphEdge;
 import com.abbys.suwaroute.model.routing.QueueNode;
 import com.abbys.suwaroute.model.routing.RouteResult;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @AllArgsConstructor
+@Service
 public class DijkstraService {
     private final Graph graph;
 

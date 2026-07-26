@@ -5,9 +5,11 @@ import com.abbys.suwaroute.model.graph.Graph;
 import com.abbys.suwaroute.model.osm.OsmNode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.stereotype.Service;
 
 @Data
 @AllArgsConstructor
+@Service
 public class NearestNodeService {
     private final Graph graph;
 
