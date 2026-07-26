@@ -1,5 +1,6 @@
 package com.abbys.suwaroute.common.parser;
 
+import com.abbys.suwaroute.common.utils.GeoUtils;
 import com.abbys.suwaroute.model.graph.Graph;
 import com.abbys.suwaroute.model.graph.GraphEdge;
 import com.abbys.suwaroute.model.osm.OsmNode;
@@ -31,7 +32,11 @@ public class OsmGraphBuilder {
                 if (fromNode == null || toNode == null)
                     continue;
 
-                double distance = calculateDistance(fromNode, toNode);
+                double distance = GeoUtils.haversine(
+                        fromNode.getLatitude(),
+                        fromNode.getLongitude(),
+                        toNode.getLatitude(),
+                        toNode.getLongitude());
 
                 addEdge(graph, fromId, toId, distance, way.isOneWay());
 
@@ -66,28 +71,6 @@ public class OsmGraphBuilder {
                 .computeIfAbsent(from, k -> new ArrayList<>())
                 .add(edge);
 
-    }
-
-    private double calculateDistance(OsmNode from, OsmNode to) {
-
-        final double R = 6371000;
-
-        double lat1 = Math.toRadians(from.getLatitude());
-        double lat2 = Math.toRadians(to.getLatitude());
-
-        double dLat = lat2 - lat1;
-        double dLon = Math.toRadians(to.getLongitude() - from.getLongitude());
-
-        double a =
-                Math.sin(dLat / 2) * Math.sin(dLat / 2)
-                        + Math.cos(lat1)
-                        * Math.cos(lat2)
-                        * Math.sin(dLon / 2)
-                        * Math.sin(dLon / 2);
-
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-        return R * c;
     }
 
 }
