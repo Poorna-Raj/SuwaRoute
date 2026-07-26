@@ -52,4 +52,20 @@ public class RoutingService {
                 .path(path)
                 .build();
     }
+
+    public double calculateDistanceBetweenNodes(
+            long sourceNodeId,
+            long destinationNodeId
+    ){
+        RouteResult result = dijkstraService.shortestPath(
+                sourceNodeId,
+                destinationNodeId
+        );
+
+        if(result == null) {
+            return Double.MAX_VALUE;
+        }
+
+        return result.getTotalDistance();
+    }
 }
