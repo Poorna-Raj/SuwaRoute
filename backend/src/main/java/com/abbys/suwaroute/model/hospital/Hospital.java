@@ -14,7 +14,7 @@ public class Hospital {
     private String hospitalName;
     private double longitude;
     private double latitude;
-    private long currentNode;
+    private Long currentNode;
     private int availableIcuBeds;
     private String contactNumber;
 }

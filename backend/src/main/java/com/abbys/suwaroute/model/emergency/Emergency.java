@@ -1,5 +1,6 @@
 package com.abbys.suwaroute.model.emergency;
 
+import com.google.cloud.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,10 +18,10 @@ public class Emergency {
     private String callerNumber;
     private double longitude;
     private double latitude;
-    private long nearestNodeId;
+    private Long nearestNodeId;
     private EmergencySeverity severity;
     private EmergencyStatus status;
     private String assignedAmbulanceId;
     private String assignedHospitalId;
-    private LocalDateTime createdAt;
+    private String createdAt;
 }
