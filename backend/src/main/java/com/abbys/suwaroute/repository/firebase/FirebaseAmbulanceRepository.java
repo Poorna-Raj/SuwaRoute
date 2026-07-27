@@ -125,16 +125,20 @@ public class FirebaseAmbulanceRepository implements AmbulanceRepository {
     public List<Ambulance> findAvailable() {
         try {
 
-            List<QueryDocumentSnapshot> documents = firestore
+            QuerySnapshot snapshot = firestore
                     .collection(COLLECTION)
                     .whereEqualTo("status", AmbulanceStatus.AVAILABLE.name())
                     .get()
-                    .get()
-                    .getDocuments();
+                    .get();
+
+            System.out.println("Documents found: " + snapshot.size());
 
             List<Ambulance> ambulances = new ArrayList<>();
 
-            for (QueryDocumentSnapshot document : documents) {
+            for (QueryDocumentSnapshot document : snapshot.getDocuments()) {
+
+                System.out.println(document.getData());
+
                 ambulances.add(document.toObject(Ambulance.class));
             }
 
