@@ -12,9 +12,14 @@ import java.util.List;
 public class HospitalService {
 
     private final HospitalRepository repository;
+    private final NearestNodeService nearestNodeService;
 
-    public HospitalService(HospitalRepository repository) {
+    public HospitalService(
+            HospitalRepository repository,
+            NearestNodeService nearestNodeService
+    ) {
         this.repository = repository;
+        this.nearestNodeService = nearestNodeService;
     }
 
     public Hospital createHospital(Hospital hospital) {
@@ -24,6 +29,13 @@ public class HospitalService {
                     "Hospital with ID '" + hospital.getHospitalId() + "' already exists."
             );
         }
+
+        long nearestNode = nearestNodeService.findNearestNode(
+                hospital.getLatitude(),
+                hospital.getLongitude()
+        );
+
+        hospital.setCurrentNode(nearestNode);
 
         return repository.save(hospital);
     }
@@ -54,6 +66,13 @@ public class HospitalService {
         }
 
         hospital.setHospitalId(id);
+
+        long nearestNode = nearestNodeService.findNearestNode(
+                hospital.getLatitude(),
+                hospital.getLongitude()
+        );
+
+        hospital.setCurrentNode(nearestNode);
 
         return repository.update(hospital);
     }
