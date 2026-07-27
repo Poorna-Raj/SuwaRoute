@@ -1,12 +1,10 @@
 package com.abbys.suwaroute.service;
 
-import com.abbys.suwaroute.common.exception.ResourceNotFoundException;
 import com.abbys.suwaroute.model.ambulance.Ambulance;
 import com.abbys.suwaroute.model.ambulance.AmbulanceStatus;
 import com.abbys.suwaroute.model.emergency.Emergency;
 import com.abbys.suwaroute.model.emergency.EmergencyStatus;
 import com.abbys.suwaroute.model.hospital.Hospital;
-import com.abbys.suwaroute.repository.firebase.EmergencyRepository;
 import com.google.cloud.firestore.Firestore;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +18,6 @@ public class DispatchService {
     private final AmbulanceService ambulanceService;
     private final HospitalService hospitalService;
     private final RoutingService routingService;
-    private final EmergencyRepository emergencyRepository;
     private final Firestore firestore;
 
     private Ambulance findNearestAvailableAmbulance(Emergency emergency) {
