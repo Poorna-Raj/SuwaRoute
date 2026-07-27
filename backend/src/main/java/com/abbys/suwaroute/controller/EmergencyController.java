@@ -92,4 +92,20 @@ public class EmergencyController {
                 )
         );
     }
+
+    @PatchMapping("/{id}/complete")
+    public ResponseEntity<ApiResponse<Emergency>> completeEmergency(
+            @PathVariable String id) {
+
+        Emergency completed =
+                emergencyService.completeEmergency(id);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        "Emergency completed successfully.",
+                        completed
+                )
+        );
+    }
 }
