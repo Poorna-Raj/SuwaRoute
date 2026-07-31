@@ -5,14 +5,12 @@ import com.abbys.suwaroute.common.dto.RouteResponse;
 import com.abbys.suwaroute.service.RoutingService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/routes")
 @AllArgsConstructor
+@CrossOrigin(origins = "*")
 public class RouteController {
     private final RoutingService routingService;
 
