@@ -2,6 +2,7 @@ package com.abbys.suwaroute.repository.firebase;
 
 import com.abbys.suwaroute.common.exception.DatabaseException;
 import com.abbys.suwaroute.model.ambulance.Ambulance;
+import com.abbys.suwaroute.model.ambulance.AmbulanceStatus;
 import com.google.cloud.firestore.*;
 import org.springframework.stereotype.Repository;
 
@@ -117,6 +118,37 @@ public class FirebaseAmbulanceRepository implements AmbulanceRepository {
             throw new DatabaseException("Database operation interrupted.", e);
         } catch (ExecutionException e) {
             throw new DatabaseException("Failed to delete ambulance.", e);
+        }
+    }
+
+    @Override
+    public List<Ambulance> findAvailable() {
+        try {
+
+            QuerySnapshot snapshot = firestore
+                    .collection(COLLECTION)
+                    .whereEqualTo("status", AmbulanceStatus.AVAILABLE.name())
+                    .get()
+                    .get();
+
+            System.out.println("Documents found: " + snapshot.size());
+
+            List<Ambulance> ambulances = new ArrayList<>();
+
+            for (QueryDocumentSnapshot document : snapshot.getDocuments()) {
+
+                System.out.println(document.getData());
+
+                ambulances.add(document.toObject(Ambulance.class));
+            }
+
+            return ambulances;
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new DatabaseException("Database operation interrupted.", e);
+        } catch (ExecutionException e) {
+            throw new DatabaseException("Failed to retrieve available ambulances.", e);
         }
     }
 }
