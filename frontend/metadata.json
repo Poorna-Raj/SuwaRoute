@@ -1,0 +1,6 @@
+{
+  "name": "SuwaRoute",
+  "description": "Intelligent Emergency Ambulance Dispatch and Graph-Based Routing Command Center",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
