@@ -2,6 +2,7 @@ package com.abbys.suwaroute.service;
 
 import com.abbys.suwaroute.model.graph.Graph;
 import com.abbys.suwaroute.model.graph.GraphEdge;
+import com.abbys.suwaroute.model.routing.MinHeap;
 import com.abbys.suwaroute.model.routing.QueueNode;
 import com.abbys.suwaroute.model.routing.RouteResult;
 import lombok.AllArgsConstructor;
@@ -12,36 +13,46 @@ import java.util.*;
 @AllArgsConstructor
 @Service
 public class DijkstraService {
+
     private final Graph graph;
 
-    public RouteResult shortestPath(long source, long destination){
-        PriorityQueue<QueueNode> queue = new PriorityQueue<>();
-        // TODO:: Implement the priority queue later
+    public RouteResult shortestPath(long source, long destination) {
 
-        Map<Long,Double> distance = new HashMap<>();
-        Map<Long,Long> previous = new HashMap<>();
+        MinHeap queue = new MinHeap();
+
+        Map<Long, Double> distance = new HashMap<>();
+        Map<Long, Long> previous = new HashMap<>();
         Set<Long> visited = new HashSet<>();
 
-        distance.put(source,0.0);
-        queue.offer(new QueueNode(source,0.0));
+        distance.put(source, 0.0);
 
-        while(!queue.isEmpty()){
-            QueueNode current = queue.poll();
+        queue.insert(new QueueNode(source, 0.0));
+
+        while (!queue.isEmpty()) {
+
+            QueueNode current = queue.extractMin();
+
+            if (current == null) {
+                break;
+            }
+
             long currentNodeId = current.getNodeId();
 
-            if(visited.contains(currentNodeId)){
+            if (visited.contains(currentNodeId)) {
                 continue;
             }
+
             visited.add(currentNodeId);
 
-            if(currentNodeId == destination){
+            if (currentNodeId == destination) {
                 break;
             }
 
             List<GraphEdge> edges = graph.getAdjacencyList()
-                    .getOrDefault(currentNodeId,Collections.emptyList());
+                    .getOrDefault(currentNodeId, Collections.emptyList());
 
-            for(GraphEdge edge: edges){
+            for (GraphEdge edge : edges) {
+
                 long neighbourId = edge.getDestinationNodeId();
 
                 double newDistance = distance.get(currentNodeId)
@@ -52,11 +63,13 @@ public class DijkstraService {
                         Double.POSITIVE_INFINITY
                 );
 
-                if(newDistance < oldDistance){
-                    distance.put(neighbourId,newDistance);
-                    previous.put(neighbourId,currentNodeId);
+                if (newDistance < oldDistance) {
 
-                    queue.offer(
+                    distance.put(neighbourId, newDistance);
+
+                    previous.put(neighbourId, currentNodeId);
+
+                    queue.insert(
                             new QueueNode(
                                     neighbourId,
                                     newDistance
@@ -66,7 +79,7 @@ public class DijkstraService {
             }
         }
 
-        if(!distance.containsKey(destination)){
+        if (!distance.containsKey(destination)) {
             return null;
         }
 
@@ -74,12 +87,13 @@ public class DijkstraService {
 
         long current = destination;
 
-        while(current != source){
+        while (current != source) {
             path.add(current);
             current = previous.get(current);
         }
 
         path.add(source);
+
         Collections.reverse(path);
 
         return RouteResult.builder()

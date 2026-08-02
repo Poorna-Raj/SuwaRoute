@@ -5,12 +5,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class QueueNode implements Comparable<QueueNode> {
+public class QueueNode {
     private long nodeId;
-    private double distance;
 
-    @Override
-    public int compareTo(QueueNode o) {
-        return Double.compare(this.distance,o.distance);
-    }
+    private double distance;
 }
