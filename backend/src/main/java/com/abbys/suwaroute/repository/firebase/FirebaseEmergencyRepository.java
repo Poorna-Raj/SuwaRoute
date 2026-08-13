@@ -25,15 +25,29 @@ public class FirebaseEmergencyRepository implements EmergencyRepository {
 
     @Override
     public Emergency save(Emergency emergency) {
-        try{
+        try {
+
+            if (emergency.getEmergencyId() == null || emergency.getEmergencyId().isBlank()) {
+
+                String generatedId = firestore
+                        .collection(COLLECTION)
+                        .document()
+                        .getId();
+
+                emergency.setEmergencyId(generatedId);
+            }
+
             firestore.collection(COLLECTION)
                     .document(emergency.getEmergencyId())
                     .set(emergency)
                     .get();
+
             return emergency;
+
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new DatabaseException("Database operation interrupted.", e);
+
         } catch (ExecutionException e) {
             throw new DatabaseException("Failed to save emergency.", e);
         }

@@ -12,6 +12,8 @@ public interface AmbulanceRepository {
 
     List<Ambulance> findAll();
 
+    List<Ambulance> findAvailable();
+
     Ambulance update(Ambulance ambulance);
 
     void delete(String ambulanceId);

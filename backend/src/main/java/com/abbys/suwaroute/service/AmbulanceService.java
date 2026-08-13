@@ -13,9 +13,14 @@ import java.util.List;
 public class AmbulanceService {
 
     private final AmbulanceRepository ambulanceRepository;
+    private final NearestNodeService nearestNodeService;
 
-    public AmbulanceService(AmbulanceRepository ambulanceRepository) {
+    public AmbulanceService(
+            AmbulanceRepository ambulanceRepository,
+            NearestNodeService nearestNodeService
+    ) {
         this.ambulanceRepository = ambulanceRepository;
+        this.nearestNodeService = nearestNodeService;
     }
 
     public Ambulance createAmbulance(Ambulance ambulance) {
@@ -27,6 +32,13 @@ public class AmbulanceService {
         if (ambulance.getStatus() == null) {
             ambulance.setStatus(AmbulanceStatus.AVAILABLE);
         }
+
+        long nearestNode = nearestNodeService.findNearestNode(
+                ambulance.getLatitude(),
+                ambulance.getLongitude()
+        );
+
+        ambulance.setCurrentNode(nearestNode);
 
         return ambulanceRepository.save(ambulance);
     }
@@ -52,6 +64,13 @@ public class AmbulanceService {
             throw new ResourceNotFoundException("Ambulance not found.");
         }
 
+        long nearestNode = nearestNodeService.findNearestNode(
+                ambulance.getLatitude(),
+                ambulance.getLongitude()
+        );
+
+        ambulance.setCurrentNode(nearestNode);
+
         return ambulanceRepository.update(ambulance);
     }
 
@@ -64,4 +83,7 @@ public class AmbulanceService {
         ambulanceRepository.delete(id);
     }
 
+    public List<Ambulance> findAvailableAmbulances() {
+        return ambulanceRepository.findAvailable();
+    }
 }

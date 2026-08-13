@@ -15,7 +15,7 @@ import java.util.concurrent.ExecutionException;
 public class FirebaseHospitalRepository implements HospitalRepository{
     private static final String COLLECTION = "hospitals";
 
-    private Firestore firestore;
+    private final Firestore firestore;
 
     public FirebaseHospitalRepository(Firestore firestore) {
         this.firestore = firestore;
@@ -113,6 +113,33 @@ public class FirebaseHospitalRepository implements HospitalRepository{
             throw new DatabaseException("Database operation interrupted.", e);
         } catch (ExecutionException e) {
             throw new DatabaseException("Failed to delete hospital.", e);
+        }
+    }
+
+    @Override
+    public List<Hospital> findHospitalsWithAvailableBeds() {
+        try {
+
+            List<QueryDocumentSnapshot> documents = firestore
+                    .collection(COLLECTION)
+                    .whereGreaterThan("availableIcuBeds", 0)
+                    .get()
+                    .get()
+                    .getDocuments();
+
+            List<Hospital> hospitals = new ArrayList<>();
+
+            for (QueryDocumentSnapshot document : documents) {
+                hospitals.add(document.toObject(Hospital.class));
+            }
+
+            return hospitals;
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new DatabaseException("Database operation interrupted.", e);
+        } catch (ExecutionException e) {
+            throw new DatabaseException("Failed to retrieve hospitals with available ICU beds.", e);
         }
     }
 }

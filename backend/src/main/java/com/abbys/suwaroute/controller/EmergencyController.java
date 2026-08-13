@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/emergencies")
+@CrossOrigin(origins = "*")
 public class EmergencyController {
 
     private final EmergencyService emergencyService;
@@ -89,6 +90,22 @@ public class EmergencyController {
                         true,
                         "Emergency deleted successfully.",
                         null
+                )
+        );
+    }
+
+    @PatchMapping("/{id}/complete")
+    public ResponseEntity<ApiResponse<Emergency>> completeEmergency(
+            @PathVariable String id) {
+
+        Emergency completed =
+                emergencyService.completeEmergency(id);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        "Emergency completed successfully.",
+                        completed
                 )
         );
     }

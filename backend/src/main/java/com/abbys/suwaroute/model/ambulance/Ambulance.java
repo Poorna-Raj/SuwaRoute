@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class Ambulance {
     private String ambulanceId;
     private AmbulanceStatus status;
-    private String currentNode;
+    private Long currentNode;
     private double latitude;
     private double longitude;
     private double speed;
